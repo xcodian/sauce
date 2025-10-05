@@ -41,19 +41,23 @@ void setup() {
 }
 
 void onIndex() {
-  server.send(200, "text/plain", "Sanitizer superposition API server online; use /gamble to try your luck or /state to get current odds");
+  StaticJsonDocument<128> json;
+  json["superposition"] = "v1";
+
+  String jsonString;
+  serializeJson(json, jsonString);
+  server.send(200, "application/json", jsonString);
 }
 
 // 0 = Left, 100 = Right
 int odds = 50;
 
-void onStatus () {
+void onStatus() {
   StaticJsonDocument<128> json;
   json["odds"] = odds;
 
   String jsonString;
   serializeJson(json, jsonString);
-
   server.send(200, "application/json", jsonString);
 }
 
@@ -97,9 +101,15 @@ void onGamble() {
   }
 }
 
-void servoCenter() { ledcWrite(7, 50); }
-void servoLeft()   { ledcWrite(7, 30); }
-void servoRight()  { ledcWrite(7, 70); }
+void servoCenter() {
+  ledcWrite(7, 50);
+}
+void servoLeft() {
+  ledcWrite(7, 30);
+}
+void servoRight() {
+  ledcWrite(7, 70);
+}
 
 void loop() {
   server.handleClient();
